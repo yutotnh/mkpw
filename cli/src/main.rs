@@ -388,7 +388,7 @@ mod tests {
                 // Surrogate pair
                 OsString::from("😀🚀🐱"),
                 // Variation Selectors
-                OsString::from("花󠄁龍󠄂舟󠄁👍🏿"),
+                OsString::from("花󠄁龍󠄀舟󠄁👍🏿"),
                 // Combining character
                 OsString::from("áパぎ"),
                 // Zero-width joiner
@@ -407,32 +407,32 @@ mod tests {
         assert_eq!(passwords[0].graphemes(true).count(), 16);
 
         // Test if the string contains the characters
-        assert!(
-            passwords[0].contains("😀")
-                || passwords[0].contains("🚀")
-                || passwords[0].contains("🐱")
-        );
-        assert!(
-            passwords[0].contains("花")
-                || passwords[0].contains("龍")
-                || passwords[0].contains("舟")
-        );
-        assert!(
-            passwords[0].contains("á")
-                || passwords[0].contains("パ")
-                || passwords[0].contains("ぎ")
-        );
-        assert!(
-            passwords[0].contains("🏳️‍🌈")
-                || passwords[0].contains("❤️‍🔥")
-                || passwords[0].contains("👨‍👩‍👦")
-        );
-        assert!(
-            passwords[0].contains("🇯🇵")
-                || passwords[0].contains("🇺🇸")
-                || passwords[0].contains("🇲🇦")
-                || passwords[0].contains("🇨🇦")
-        );
+        let count_rocket = passwords[0].matches("🚀").count();
+        let count_cat = passwords[0].matches("🐱").count();
+        let count_smile = passwords[0].matches("😀").count();
+        assert!(1 <= count_rocket + count_cat + count_smile);
+
+        let count_hana = passwords[0].matches("花󠄁").count();
+        let count_ryu = passwords[0].matches("龍󠄀").count();
+        let count_fune = passwords[0].matches("舟󠄁").count();
+        let count_ok = passwords[0].matches("👍🏿").count();
+        assert!(2 <= count_hana + count_ryu + count_fune + count_ok);
+
+        let count_a = passwords[0].matches("á").count();
+        let count_pa = passwords[0].matches("パ").count();
+        let count_ki = passwords[0].matches("ぎ").count();
+        assert!(3 <= count_a + count_pa + count_ki);
+
+        let count_rainbow = passwords[0].matches("🏳️‍🌈").count();
+        let count_fire = passwords[0].matches("❤️‍🔥").count();
+        let count_family = passwords[0].matches("👨‍👩‍👦").count();
+        assert!(4 <= count_rainbow + count_fire + count_family);
+
+        let count_jp = passwords[0].matches("🇯🇵").count();
+        let count_us = passwords[0].matches("🇺🇸").count();
+        let count_ma = passwords[0].matches("🇲🇦").count();
+        let count_ca = passwords[0].matches("🇨🇦").count();
+        assert!(2 <= count_jp + count_us + count_ma + count_ca);
     }
 
     #[test]
