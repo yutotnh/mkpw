@@ -2,7 +2,6 @@
 resolver = "2"
 
 members = [
-    "cli",
     "password-maker",
 ]
 
@@ -11,3 +10,27 @@ edition = "2021"
 rust-version = "1.82.0"
 authors = ["yutotnh <57719497+yutotnh@users.noreply.github.com>"]
 license = "MIT OR Apache-2.0"
+
+[package]
+name = "mkpw"
+version = "0.1.0"
+edition.workspace = true
+description = "Highly customizable password generation tool. 🔑"
+homepage = "https://github.com/yutotnh/mkpw/tree/main/cli"
+repository = "https://github.com/yutotnh/mkpw/tree/main/cli"
+readme = "README.md"
+keywords = ["password", "password-generator", "cli", "utility"]
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+arboard = "3.4.1"
+clap = { version = "4.5.20", features = ["derive"] }
+clap_complete = "4.5.33"
+encoding_rs = "0.8.34"
+password-maker = { version = "*", path = "./password-maker" }
+unicode-segmentation = "1.12.0"
+
+[dev-dependencies]
+assert_cmd = "2.0.16"
