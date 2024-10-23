@@ -10,6 +10,7 @@ edition = "2021"
 rust-version = "1.82.0"
 authors = ["yutotnh <57719497+yutotnh@users.noreply.github.com>"]
 license = "MIT OR Apache-2.0"
+include = ["src/**/*", "README.md", "LICENSE*"]
 
 [package]
 name = "mkpw"
@@ -23,6 +24,7 @@ keywords = ["password", "password-generator", "cli", "utility"]
 rust-version.workspace = true
 authors.workspace = true
 license.workspace = true
+include.workspace = true
 
 [dependencies]
 arboard = "3.4.1"

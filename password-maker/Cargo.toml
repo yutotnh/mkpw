@@ -10,6 +10,7 @@ keywords = ["password", "password-generator", "library", "utility"]
 rust-version.workspace = true
 authors.workspace = true
 license.workspace = true
+include.workspace = true
 
 [dependencies]
 indexmap = "2.6.0"
