@@ -109,4 +109,4 @@ The password-maker project is licensed under both the Apache License, Version 2.
 
 You may select, at your option, one of the above-listed licenses.
 
-See the [LICENSE-APACHE](../LICENSE-APACHE) and [LICENSE-MIT](../LICENSE-MIT) files for the full text of the Apache License, Version 2.0 and the MIT License, respectively.
+See the [LICENSE-APACHE](./LICENSE-APACHE) and [LICENSE-MIT](./LICENSE-MIT) files for the full text of the Apache License, Version 2.0 and the MIT License, respectively.
