@@ -2,7 +2,7 @@
 
 This is a password generation library for Rust.
 
-## Usage
+## Example
 
 ## Generate a password with the default settings
 
@@ -105,7 +105,7 @@ fn main() {
 
 ## License
 
-The password-maker project is licensed under both the Apache License, Version 2.0 and the MIT License.
+Licensed under both the Apache License, Version 2.0 and the MIT License.
 
 You may select, at your option, one of the above-listed licenses.
 
