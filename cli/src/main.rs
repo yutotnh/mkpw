@@ -134,6 +134,7 @@ impl Default for Cli {
         }
     }
 }
+
 /// Output the completion script
 ///
 /// # Arguments
@@ -218,7 +219,7 @@ fn set_classifiers(maker: &mut PasswordMaker, args: &Cli) -> Result<(), String> 
 
     // Adjust the number of candidates and minimum counts
     while other_candidates.len() < other_minimum_count.len() {
-        other_candidates.push("".to_string());
+        other_candidates.push(String::new());
     }
     while other_minimum_count.len() < other_candidates.len() {
         other_minimum_count.push(0);
@@ -716,6 +717,31 @@ mod tests {
 
             assert_eq!(maker.others[1].candidates, vec!["あ", "い", "う"]);
             assert_eq!(maker.others[1].minimum_count, 2);
+        }
+
+        // When there are two other_candidates and three other_minimum_counts
+        {
+            let mut maker = PasswordMaker::default();
+            let args = Cli {
+                other_candidates: Some(vec![
+                    OsString::from("😀👨‍👩‍👦😂"),
+                    OsString::from("あいう"),
+                ]),
+                other_minimum_count: Some(vec![1, 2, 3]),
+                ..Default::default()
+            };
+
+            set_classifiers(&mut maker, &args).unwrap();
+
+            assert_eq!(maker.others.len(), 3);
+            assert_eq!(maker.others[0].candidates, vec!["😀", "👨‍👩‍👦", "😂"]);
+            assert_eq!(maker.others[0].minimum_count, 1);
+
+            assert_eq!(maker.others[1].candidates, vec!["あ", "い", "う"]);
+            assert_eq!(maker.others[1].minimum_count, 2);
+
+            assert_eq!(maker.others[2].candidates, Vec::<String>::new());
+            assert_eq!(maker.others[2].minimum_count, 3);
         }
     }
 
