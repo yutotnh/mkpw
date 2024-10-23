@@ -57,6 +57,13 @@ impl PasswordMaker {
     /// * Ok: Password
     /// * Err: Error message
     ///
+    /// # Errors
+    ///
+    /// * No candidates for a character type, but the minimum number of characters is set to 1 or more
+    /// * The total minimum number of characters for all types exceeds the password length
+    /// * No candidates for the password
+    /// * The password length is 0
+    ///
     /// # Examples
     ///
     /// ```
@@ -72,14 +79,6 @@ impl PasswordMaker {
         self.validate()?;
 
         let candidates = self.candidates();
-
-        // 候補文字列が空の場合はエラーを返す
-        if candidates.is_empty() {
-            return Err(
-                "No candidates for the password. Please set the candidates for the password."
-                    .to_string(),
-            );
-        }
 
         let mut rng = Self::create_rng();
 
@@ -154,12 +153,15 @@ impl PasswordMaker {
         }
     }
 
-    /// Check if the minimum number of characters for each parameter is not violated
+    /// Validate the settings of the password generator
     ///
     /// Checks:
     /// - No candidates for a character type, but the minimum number of characters is set to 1 or more
     /// - The total minimum number of characters for all types exceeds the password length
+    /// - No candidates for the password
+    /// - The password length is 0
     fn validate(&self) -> Result<(), String> {
+        // Check if the minimum number of characters for each parameter is not violated
         let classifier = [
             // Capitalize the first letter for error messages
             (&self.uppercase, "Uppercases"),
@@ -186,6 +188,7 @@ impl PasswordMaker {
             }
         }
 
+        // Check if the total minimum number of characters is not violated
         let total_min = self.lowercase.minimum_count
             + self.uppercase.minimum_count
             + self.number.minimum_count
@@ -194,6 +197,22 @@ impl PasswordMaker {
 
         if self.length < total_min {
             return Err(format!("The total minimum number of characters is greater than the password length. The total minimum number of characters is {}, but the password length is {}", total_min, self.length));
+        }
+
+        // Check if there are candidates for the password
+        if self.candidates().is_empty() {
+            return Err(
+                "No candidates for the password. Please set the candidates for the password."
+                    .to_string(),
+            );
+        }
+
+        // Check if the password length is 0
+        if self.length == 0 {
+            return Err(
+                "The password length is 0. Please set the password length to 1 or more."
+                    .to_string(),
+            );
         }
 
         Ok(())
@@ -383,8 +402,8 @@ mod tests {
         password_maker.number.minimum_count = 0;
         password_maker.symbol.minimum_count = 0;
 
-        let password = password_maker.generate().unwrap();
-        assert_eq!(password.chars().count(), 0);
+        let result = password_maker.generate();
+        assert!(result.is_err());
     }
 
     #[test]
@@ -1127,6 +1146,46 @@ mod tests {
                     + 1;
                 let result = password_maker.validate();
                 assert!(result.is_ok());
+            }
+        }
+    }
+
+    #[test]
+    fn validate_candidates() {
+        // Test if there are candidates for the password
+        {
+            let mut password_maker = PasswordMaker::default();
+
+            // There are candidates
+            {
+                let result = password_maker.validate();
+                assert!(result.is_ok());
+            }
+
+            // There are no candidates
+            {
+                password_maker.uppercase = Classifier {
+                    candidates: vec![],
+                    minimum_count: 0,
+                };
+                password_maker.lowercase = Classifier {
+                    candidates: vec![],
+                    minimum_count: 0,
+                };
+                password_maker.number = Classifier {
+                    candidates: vec![],
+                    minimum_count: 0,
+                };
+                password_maker.symbol = Classifier {
+                    candidates: vec![],
+                    minimum_count: 0,
+                };
+                password_maker.others = vec![Classifier {
+                    candidates: vec![],
+                    minimum_count: 0,
+                }];
+                let result = password_maker.validate();
+                assert!(result.is_err());
             }
         }
     }
