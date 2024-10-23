@@ -1,6 +1,6 @@
 [package]
 name = "password-maker"
-version = "0.1.0"
+version = "0.1.1"
 edition.workspace = true
 description = "Highly customizable password generation library.🔑"
 homepage = "https://github.com/yutotnh/mkpw/tree/main/password-maker"
