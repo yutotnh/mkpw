@@ -44,7 +44,7 @@ use password_maker::PasswordMaker;
 
 fn main() {
     let mut password_maker = PasswordMaker::default();
-    password_maker.symbols.candidates = vec!["@".to_string(), "^".to_string()];
+    password_maker.symbol.candidates = vec!["@".to_string(), "^".to_string()];
     let password = password_maker.generate().unwrap();
     println!("{}", password); // => dHt^fO5fzgR@X4EC
 }
@@ -59,7 +59,7 @@ use password_maker::PasswordMaker;
 
 fn main() {
     let mut password_maker = PasswordMaker::default();
-    password_maker.symbols.minimum_count = 10;
+    password_maker.symbol.minimum_count = 10;
     let password = password_maker.generate().unwrap();
     println!("{}", password); // => ZS^('}):?l}$<$|2
 }
@@ -74,12 +74,12 @@ use password_maker::PasswordMaker;
 
 fn main() {
     let mut password_maker = PasswordMaker::default();
-    password_maker.uppercases.candidates = vec![];
-    password_maker.uppercases.minimum_count = 0; // If candidates are empty, min must be 0, otherwise it will result in an error
-    password_maker.numbers.candidates = vec![];
-    password_maker.numbers.minimum_count = 0;
-    password_maker.symbols.candidates = vec![];
-    password_maker.symbols.minimum_count = 0;
+    password_maker.uppercase.candidates = vec![];
+    password_maker.uppercase.minimum_count = 0; // If candidates are empty, min must be 0, otherwise it will result in an error
+    password_maker.number.candidates = vec![];
+    password_maker.number.minimum_count = 0;
+    password_maker.symbol.candidates = vec![];
+    password_maker.symbol.minimum_count = 0;
     let password = password_maker.generate().unwrap();
     println!("{}", password); // => tfpwxjzudvaibnwg
 }
@@ -90,16 +90,24 @@ fn main() {
 You can add emojis and other characters as candidates as follows:
 
 ```rust
-use password_maker::PasswordMaker;
+use password_maker::{Classifier, PasswordMaker};
 
 fn main() {
-    let mut password_maker = PasswordMaker::default();
-    password_maker.other_characters.candidates = vec![
-        '😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘', '😗',
-        '一', '二', '三', '四', '五', '六', '七', '八', '九', '十',
-    ];
+    let mut password_maker = PasswordMaker {
+        others: vec![Classifier {
+            candidates: [
+                '😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘',
+                '😗', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十',
+            ]
+            .iter()
+            .map(|&c| c.to_string())
+            .collect(),
+            minimum_count: 1,
+        }],
+        ..Default::default()
+    };
     let password = password_maker.generate().unwrap();
-    println!("{}", password); // => >Za7q\I~N😁`=九^*[
+    println!("{}", password); // => ?🤣-五😍7=0*😘r}Nta>
 }
 ```
 
