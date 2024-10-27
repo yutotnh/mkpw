@@ -4,6 +4,9 @@ Highly customizable password generation tool. 🔑
 
 This tool uses the password generation library [password-maker](./password-maker). For more details, please refer to [password-maker/README.md](./password-maker/README.md).
 
+[![main flow](https://github.com/yutotnh/mkpw/actions/workflows/main.yml/badge.svg)](https://github.com/yutotnh/mkpw/actions/workflows/main.yml)
+[![crates.io](https://img.shields.io/crates/v/mkpw.svg)](https://crates.io/crates/mkpw)
+
 ## Installation
 
 ### From source

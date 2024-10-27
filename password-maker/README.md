@@ -2,6 +2,10 @@
 
 This is a password generation library for Rust.
 
+[![main flow](https://github.com/yutotnh/mkpw/actions/workflows/main.yml/badge.svg)](https://github.com/yutotnh/mkpw/actions/workflows/main.yml)
+[![crates.io](https://img.shields.io/crates/v/password-maker.svg)](https://crates.io/crates/password-maker)
+[![docs.rs](https://docs.rs/password-maker/badge.svg)](https://docs.rs/password-maker)
+
 ## Example
 
 ## Generate a password with the default settings
