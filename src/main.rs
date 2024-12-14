@@ -283,10 +283,12 @@ fn generate_passwords(args: &Cli) -> Result<Vec<String>, String> {
 ///
 /// Formatted passwords
 fn format_passwords(passwords: Vec<String>, null_separator: bool) -> String {
-    match null_separator {
-        true => passwords.join("\0"),
-        false => passwords.join("\n"),
-    }
+    let separater = match null_separator {
+        true => "\0",
+        false => "\n",
+    };
+
+    passwords.join(separater) + separater
 }
 
 /// Output passwords
