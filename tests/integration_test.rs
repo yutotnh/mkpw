@@ -10,7 +10,8 @@ fn integration() {
     let password = String::from_utf8(cmd.output().unwrap().stdout).unwrap();
 
     assert!(cmd.output().unwrap().status.success());
-    assert_eq!(password.len(), 16);
+    // Default character count (16) + line feed code (1) = 17
+    assert_eq!(password.len(), 17);
 
     // Checks if it contains at least one uppercase letter, one lowercase letter, one digit, and one symbol
     assert!(password.chars().any(|c| c.is_ascii_uppercase()));

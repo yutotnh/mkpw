@@ -283,10 +283,12 @@ fn generate_passwords(args: &Cli) -> Result<Vec<String>, String> {
 ///
 /// Formatted passwords
 fn format_passwords(passwords: Vec<String>, null_separator: bool) -> String {
-    match null_separator {
-        true => passwords.join("\0"),
-        false => passwords.join("\n"),
-    }
+    let separater = match null_separator {
+        true => "\0",
+        false => "\n",
+    };
+
+    passwords.join(separater) + separater
 }
 
 /// Output passwords
@@ -348,6 +350,7 @@ fn main() -> ExitCode {
         }
     }
 }
+
 #[cfg(test)]
 mod tests {
     use assert_cmd::Command;
@@ -451,14 +454,14 @@ mod tests {
     fn format_passwords_with_null_separator() {
         let passwords = vec!["password1".to_string(), "password2".to_string()];
         let formatted = format_passwords(passwords, true);
-        assert_eq!(formatted, "password1\0password2");
+        assert_eq!(formatted, "password1\0password2\0");
     }
 
     #[test]
     fn format_passwords_with_newline_separator() {
         let passwords = vec!["password1".to_string(), "password2".to_string()];
         let formatted = format_passwords(passwords, false);
-        assert_eq!(formatted, "password1\npassword2");
+        assert_eq!(formatted, "password1\npassword2\n");
     }
 
     #[test]
@@ -764,8 +767,9 @@ mod tests {
             let assert = cmd.assert();
             let output = assert.get_output();
 
-            // By default, it is 16 characters, and since one character is 1 byte, check the length with len().
-            assert_eq!(output.stdout.len(), 16);
+            // By default, the password is 16 characters long with a single newline code at the back.
+            // Since one character is one byte, check the length with len().
+            assert_eq!(output.stdout.len(), 17);
         }
 
         // When the encoding is euc-jp
@@ -795,7 +799,7 @@ mod tests {
                 .windows(2)
                 .any(|w| w == b"\xA4\xA2" || w == b"\xA4\xA4"));
             // Since only one character is 2 bytes, check the length with len().
-            assert_eq!(output.stdout.len(), 6);
+            assert_eq!(output.stdout.len(), 7);
         }
     }
 
