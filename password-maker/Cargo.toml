@@ -13,7 +13,7 @@ license.workspace = true
 include.workspace = true
 
 [dependencies]
-indexmap = "2.6.0"
+indexmap = "2.7.0"
 rand = "0.8.5"
 unicode-segmentation = "1.12.0"
 
