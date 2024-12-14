@@ -658,10 +658,7 @@ mod tests {
         {
             let mut maker = PasswordMaker::default();
             let args = Cli {
-                other_candidates: Some(vec![
-                    OsString::from("😀👨‍👩‍👦😂"),
-                    OsString::from("あいう"),
-                ]),
+                other_candidates: Some(vec![OsString::from("😀👨‍👩‍👦😂"), OsString::from("あいう")]),
                 ..Default::default()
             };
 
@@ -679,10 +676,7 @@ mod tests {
         {
             let mut maker = PasswordMaker::default();
             let args = Cli {
-                other_candidates: Some(vec![
-                    OsString::from("😀👨‍👩‍👦😂"),
-                    OsString::from("あいう"),
-                ]),
+                other_candidates: Some(vec![OsString::from("😀👨‍👩‍👦😂"), OsString::from("あいう")]),
                 other_minimum_count: Some(vec![6]),
                 ..Default::default()
             };
@@ -701,10 +695,7 @@ mod tests {
         {
             let mut maker = PasswordMaker::default();
             let args = Cli {
-                other_candidates: Some(vec![
-                    OsString::from("😀👨‍👩‍👦😂"),
-                    OsString::from("あいう"),
-                ]),
+                other_candidates: Some(vec![OsString::from("😀👨‍👩‍👦😂"), OsString::from("あいう")]),
                 other_minimum_count: Some(vec![1, 2]),
                 ..Default::default()
             };
@@ -723,10 +714,7 @@ mod tests {
         {
             let mut maker = PasswordMaker::default();
             let args = Cli {
-                other_candidates: Some(vec![
-                    OsString::from("😀👨‍👩‍👦😂"),
-                    OsString::from("あいう"),
-                ]),
+                other_candidates: Some(vec![OsString::from("😀👨‍👩‍👦😂"), OsString::from("あいう")]),
                 other_minimum_count: Some(vec![1, 2, 3]),
                 ..Default::default()
             };
