@@ -69,11 +69,3 @@ jobs:
     - run: |
         rustup update
         cargo hack check --rust-version --workspace --all-targets --ignore-private
-
-  release:
-    name: release
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: cargo install cargo-release
-      - run: cargo release --dry-run
