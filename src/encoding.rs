@@ -1,8 +1,4 @@
 use encoding_rs::Encoding;
-use std::{
-    ffi::OsString,
-    os::unix::ffi::{OsStrExt, OsStringExt},
-};
 
 /// Converts a string with the specified encoding to a String type (UTF-8)
 ///
@@ -22,18 +18,16 @@ use std::{
 /// # Examples
 ///
 /// ```
-/// use std::ffi::OsString;
-///
-/// let candidates = OsString::from_vec(vec![0x82, 0xA0, 0x82, 0xA2, 0x82, 0xA4, 0x82, 0xA6, 0x82, 0xA8]);
+/// let candidates = Vec::<u8>::from(vec![0x82, 0xA0, 0x82, 0xA2, 0x82, 0xA4, 0x82, 0xA6, 0x82, 0xA8]);
 /// let encoding = "shift_jis".to_string();
 /// let result = password_maker::encoding::decode(&candidates, &encoding);
 /// assert_eq!(result, Ok("あいうえお".to_string()));
 /// ```
-pub fn decode(text: &OsString, encoding: &String) -> Result<String, String> {
+pub fn decode(text: &[u8], encoding: &String) -> Result<String, String> {
     let encoding = Encoding::for_label_no_replacement(encoding.as_bytes())
         .ok_or(format!("Unsupported encoding: {}", encoding))?;
 
-    Ok(encoding.decode(text.as_bytes()).0.into_owned())
+    Ok(encoding.decode(text).0.into_owned())
 }
 
 /// Converts a UTF-8 string to a string with the specified encoding
@@ -54,29 +48,25 @@ pub fn decode(text: &OsString, encoding: &String) -> Result<String, String> {
 /// # Examples
 ///
 /// ```
-/// use std::ffi::OsString;
-///
 /// let text = "あいうえお";
 /// let encoding = "shift_jis";
 /// let result = password_maker::encoding::encode(text, encoding);
-/// assert_eq!(result, Ok(OsString::from_vec(vec![0x82, 0xA0, 0x82, 0xA2, 0x82, 0xA4, 0x82, 0xA6, 0x82, 0xA8])));
+/// assert_eq!(result, Ok(Vec::<u8>::from(vec![0x82, 0xA0, 0x82, 0xA2, 0x82, 0xA4, 0x82, 0xA6, 0x82, 0xA8])));
 /// ```
-pub fn encode(text: &str, encoding: &str) -> Result<OsString, String> {
+pub fn encode(text: &str, encoding: &str) -> Result<Vec<u8>, String> {
     let encoding = Encoding::for_label_no_replacement(encoding.as_bytes())
         .ok_or(format!("Unsupported encoding: {}", encoding))?;
 
-    Ok(OsString::from_vec(encoding.encode(text).0.into_owned()))
+    Ok(encoding.encode(text).0.into_owned())
 }
 
 #[cfg(test)]
 mod tests {
-    use std::{os::unix::ffi::OsStringExt, vec};
-
     use super::*;
 
     #[test]
     fn decode_from_utf8() {
-        let candidates = OsString::from("あいうえお");
+        let candidates = Vec::<u8>::from("あいうえお");
         let encoding = "utf-8".to_string();
         let result = decode(&candidates, &encoding);
         assert_eq!(result, Ok("あいうえお".to_string()));
@@ -85,9 +75,7 @@ mod tests {
     #[test]
     fn decode_from_shift_jis() {
         // Shift_JIS encoding of "あいうえお"
-        let candidates = OsString::from_vec(vec![
-            0x82, 0xA0, 0x82, 0xA2, 0x82, 0xA4, 0x82, 0xA6, 0x82, 0xA8,
-        ]);
+        let candidates = vec![0x82, 0xA0, 0x82, 0xA2, 0x82, 0xA4, 0x82, 0xA6, 0x82, 0xA8];
         let encoding = "shift_jis".to_string();
         let result = decode(&candidates, &encoding);
         assert_eq!(result, Ok("あいうえお".to_string()));
@@ -95,7 +83,7 @@ mod tests {
 
     #[test]
     fn decode_from_invalid_encoding() {
-        let candidates = OsString::from("abc");
+        let candidates = Vec::<u8>::from("abc");
         let encoding = "invalid".to_string();
         let result = decode(&candidates, &encoding);
         assert_eq!(result, Err("Unsupported encoding: invalid".to_string()));
@@ -104,9 +92,7 @@ mod tests {
     #[test]
     fn decode_from_different_encoding() {
         // "あいうえお"のShift_JIS
-        let candidates = OsString::from_vec(vec![
-            0x82, 0xA0, 0x82, 0xA2, 0x82, 0xA4, 0x82, 0xA6, 0x82, 0xA8,
-        ]);
+        let candidates = vec![0x82, 0xA0, 0x82, 0xA2, 0x82, 0xA4, 0x82, 0xA6, 0x82, 0xA8];
         let encoding = "utf-8".to_string();
         let result = decode(&candidates, &encoding);
         // Since the encoding is different, the original Shift_JIS byte sequence is returned as is.
@@ -123,7 +109,7 @@ mod tests {
         let text = "あいうえお";
         let encoding = "utf-8";
         let result = encode(text, encoding);
-        assert_eq!(result, Ok(OsString::from("あいうえお")));
+        assert_eq!(result, Ok(Vec::<u8>::from("あいうえお")));
     }
 
     #[test]
@@ -134,9 +120,9 @@ mod tests {
         // "あいうえお"のShift_JIS
         assert_eq!(
             result,
-            Ok(OsString::from_vec(vec![
+            Ok(vec![
                 0x82, 0xA0, 0x82, 0xA2, 0x82, 0xA4, 0x82, 0xA6, 0x82, 0xA8
-            ]))
+            ])
         );
     }
 
