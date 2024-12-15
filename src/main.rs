@@ -4,9 +4,9 @@ use clap::{CommandFactory, Parser};
 use clap_complete::aot::{generate, Generator, Shell};
 use encoding::encode;
 use password_maker::PasswordMaker;
+use std::ffi::OsString;
 use std::io::Write;
-use std::os::unix::ffi::OsStrExt;
-use std::{ffi::OsString, io, process::ExitCode};
+use std::{io, process::ExitCode};
 use unicode_segmentation::UnicodeSegmentation;
 
 /// Command line arguments
@@ -172,7 +172,7 @@ fn write_to_clipboard(text: &str) -> Result<(), String> {
 /// Returns an error message if an error occurs
 fn set_classifiers(maker: &mut PasswordMaker, args: &Cli) -> Result<(), String> {
     fn set_candidates_and_minimum_count(
-        candidates: &OsString,
+        candidates: &[u8],
         encoding: &String,
         minimum_count: u32,
     ) -> Result<(Vec<String>, u32), String> {
@@ -185,25 +185,25 @@ fn set_classifiers(maker: &mut PasswordMaker, args: &Cli) -> Result<(), String> 
     }
 
     (maker.uppercase.candidates, maker.uppercase.minimum_count) = set_candidates_and_minimum_count(
-        &args.uppercase_candidates,
+        args.uppercase_candidates.as_encoded_bytes(),
         &args.encoding,
         args.uppercase_minimum_count,
     )?;
 
     (maker.lowercase.candidates, maker.lowercase.minimum_count) = set_candidates_and_minimum_count(
-        &args.lowercase_candidates,
+        args.lowercase_candidates.as_encoded_bytes(),
         &args.encoding,
         args.lowercase_minimum_count,
     )?;
 
     (maker.number.candidates, maker.number.minimum_count) = set_candidates_and_minimum_count(
-        &args.number_candidates,
+        args.number_candidates.as_encoded_bytes(),
         &args.encoding,
         args.number_minimum_count,
     )?;
 
     (maker.symbol.candidates, maker.symbol.minimum_count) = set_candidates_and_minimum_count(
-        &args.symbol_candidates,
+        args.symbol_candidates.as_encoded_bytes(),
         &args.encoding,
         args.symbol_minimum_count,
     )?;
@@ -213,7 +213,7 @@ fn set_classifiers(maker: &mut PasswordMaker, args: &Cli) -> Result<(), String> 
         .clone()
         .unwrap_or_default()
         .iter()
-        .map(|s| encoding::decode(s, &args.encoding))
+        .map(|s| encoding::decode(s.as_encoded_bytes(), &args.encoding))
         .collect::<Result<Vec<String>, String>>()?;
     let mut other_minimum_count = args.other_minimum_count.clone().unwrap_or_default();
 
@@ -312,7 +312,7 @@ fn output_passwords(text: &str, args: &Cli) -> Result<(), String> {
         let stdout = io::stdout();
         let mut handle = stdout.lock();
         handle
-            .write_all(encoded_string.as_bytes())
+            .write_all(&encoded_string)
             .map_err(|e| e.to_string())?;
     }
 
@@ -354,7 +354,9 @@ fn main() -> ExitCode {
 #[cfg(test)]
 mod tests {
     use assert_cmd::Command;
-    use std::{os::unix::ffi::OsStringExt, vec};
+    #[cfg(unix)]
+    use std::os::unix::ffi::OsStringExt;
+    use std::{ffi::OsString, vec};
 
     use super::*;
 
@@ -499,6 +501,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(unix)]
     fn set_classifiers_shift_jis() {
         let mut maker = PasswordMaker::default();
         let args = Cli {
@@ -774,6 +777,7 @@ mod tests {
 
         // When the encoding is euc-jp
         // Check that either "あい" is included.
+        #[cfg(unix)]
         {
             let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
 
