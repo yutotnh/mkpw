@@ -14,7 +14,7 @@ include = ["src/**/*", "README.md", "LICENSE*"]
 
 [package]
 name = "mkpw"
-version = "0.1.0"
+version = "0.1.1"
 edition.workspace = true
 description = "Highly customizable password generation tool. 🔑"
 homepage = "https://github.com/yutotnh/mkpw/"
