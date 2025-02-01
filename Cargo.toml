@@ -28,7 +28,7 @@ include.workspace = true
 
 [dependencies]
 arboard = "3.4.1"
-clap = { version = "4.5.23", features = ["derive"] }
+clap = { version = "4.5.27", features = ["derive"] }
 clap_complete = "4.5.44"
 encoding_rs = "0.8.35"
 password-maker = { version = "0.1.2", path = "./password-maker" }
